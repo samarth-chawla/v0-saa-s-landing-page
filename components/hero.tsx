@@ -1,208 +1,331 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { ArrowRight } from "lucide-react"
-import BackgroundBlob from "./background-blob"
+import { useEffect, useState } from "react";
+import {
+  ArrowRight,
+  Video,
+  Calendar,
+  MoreHorizontal,
+  Plus,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+// import BackgroundBlob from "./background-blob";
 
-interface HeroProps {
-  colorState: "purple" | "cyan" | "green"
-}
+const words = ["work", "culture building", "decision making", "collaboration"];
 
-export default function Hero({ colorState }: HeroProps) {
-  const [animateElements, setAnimateElements] = useState(false)
-  const [revealedWords, setRevealedWords] = useState(0)
-  const [subtextVisible, setSubtextVisible] = useState(false)
-
-  const headingWords = ["Work with your", "colleagues and", "AI agents."]
+export default function Hero() {
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    setAnimateElements(true)
-    const wordTimer = setInterval(() => {
-      setRevealedWords((prev) => {
-        if (prev < headingWords.length) {
-          return prev + 1
-        }
-        return prev
-      })
-    }, 200)
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % words.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
 
-    const subtextTimer = setTimeout(() => {
-      setSubtextVisible(true)
-    }, 500)
-
-    return () => {
-      clearInterval(wordTimer)
-      clearTimeout(subtextTimer)
-    }
-  }, [])
-
-  const bgColor = {
-    purple: "from-purple-600",
-    cyan: "from-cyan-600",
-    green: "from-green-600",
-  }[colorState]
-
-  const ringColor = {
-    purple: "ring-purple-500/20",
-    cyan: "ring-cyan-500/20",
-    green: "ring-green-500/20",
-  }[colorState]
+  const currentColorClass = "text-purple-600";
 
   return (
-    <section className="relative w-full bg-white pt-24 pb-12 md:pt-32 md:pb-20 overflow-hidden">
-      <BackgroundBlob colorState={colorState} />
+    <section className="relative w-full bg-white pt-32 pb-20 overflow-hidden">
+      {/* <BackgroundBlob /> */}
 
-      <div className="max-w-6xl mx-auto px-4 md:px-6 relative z-10">
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-          {/* Left Content */}
-          <div className="flex flex-col gap-6 md:gap-8">
-            <div
-              className={`inline-flex items-center px-4 py-2 rounded-full border ${ringColor} bg-white/50 backdrop-blur w-fit gap-2 text-sm font-medium transition-all duration-700 ${animateElements ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-            >
-              <span className="inline-block w-2 h-2 bg-current rounded-full animate-pulse" />
-              <span className="text-gray-700">New AI Features</span>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10 flex flex-col items-center text-center">
+        {/* Animated Headline */}
+        <h1 className="text-5xl md:text-7xl font-bold text-gray-900 tracking-tight mb-6 flex flex-wrap justify-center items-center gap-x-3 gap-y-2">
+          <span>Where</span>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-balance leading-tight text-gray-900 min-h-[120px] md:min-h-[140px]">
-              {headingWords.map((word, idx) => (
-                <span
-                  key={idx}
-                  className={`inline-block mr-2 transition-all duration-500 ${
-                    idx < revealedWords ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                  }`}
-                >
-                  {word}
-                </span>
-              ))}
-            </h1>
-
-            <p
-              className={`text-lg md:text-xl text-gray-600 text-balance leading-relaxed max-w-lg transition-all duration-1000 ${
-                subtextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-              }`}
-            >
-              Slack is built for bringing people and information together. Type things out. Talk things through. Invite
-              external organisations into the conversation. And get work done with AI agents.
-            </p>
-
-            {/* Stats */}
-            <div
-              className={`flex items-baseline gap-3 py-6 border-t border-gray-200 transition-all duration-1000 delay-300 ${
-                subtextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-              }`}
-            >
-              <span
-                className={`text-4xl md:text-5xl font-bold bg-gradient-to-r ${bgColor} ${colorState === "cyan" ? "to-cyan-500" : colorState === "green" ? "to-green-500" : "to-purple-500"} bg-clip-text text-transparent`}
-              >
-                80%
-              </span>
-              <span className="text-gray-600 text-sm md:text-base">
-                of Fortune 100 use Slack Connect to work with partners and customers
-              </span>
-            </div>
-
-            {/* CTA Buttons */}
-            <div
-              className={`flex flex-col sm:flex-row gap-4 pt-4 transition-all duration-1000 delay-500 ${
-                subtextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-              }`}
-            >
-              <button
-                className={`px-7 py-3 rounded-lg bg-gradient-to-r ${bgColor} ${colorState === "cyan" ? "to-cyan-500" : colorState === "green" ? "to-green-500" : "to-purple-500"} text-white font-semibold hover:shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2`}
-              >
-                GET STARTED
-              </button>
-              <button className="px-7 py-3 rounded-lg border-2 border-gray-300 text-gray-900 font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2">
-                FIND YOUR PLAN
-                <ArrowRight size={18} />
-              </button>
-            </div>
-          </div>
-
-          {/* Right - App Mockup */}
-          <div
-            className={`relative h-[400px] md:h-[500px] flex items-center justify-center transition-all duration-1000 delay-200 ${
-              animateElements ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
+          {/* Animated Container */}
+          <span
+            className={`relative inline-flex flex-col h-[1.1em] overflow-hidden align-middle ${currentColorClass}`}
           >
-            <div
-              className="absolute inset-0 rounded-full pointer-events-none transition-all duration-500"
-              style={{
-                background: `radial-gradient(circle at center, ${colorState === "purple" ? "rgba(168, 85, 247, 0.1)" : colorState === "cyan" ? "rgba(34, 211, 238, 0.1)" : "rgba(34, 197, 94, 0.1)"} 0%, transparent 70%)`,
-              }}
-            />
+            {/* 1. Invisible Spacer: Controls the Width Smoothly */}
+            <motion.span
+              layout
+              className="opacity-0 select-none whitespace-nowrap"
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              {words[index]}
+            </motion.span>
 
-            {/* App Mockup */}
-            <div className="relative z-10 w-full max-w-sm">
-              <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-gray-200/50 bg-white transform hover:scale-105 transition-transform duration-300">
-                {/* Browser Header */}
-                <div className="bg-gray-800 px-4 py-3 flex items-center gap-2">
-                  <div className="flex gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                    <div className="w-3 h-3 rounded-full bg-green-500" />
+            {/* 2. Visible Text: Floats absolutely on top */}
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                key={index}
+                className="absolute top-0 left-0 whitespace-nowrap"
+                initial={{ y: "110%", opacity: 0, filter: "blur(8px)" }}
+                animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                exit={{ y: "-110%", opacity: 0, filter: "blur(8px)" }}
+                transition={{
+                  y: { type: "spring", stiffness: 100, damping: 20 },
+                  opacity: { duration: 0.3 },
+                  filter: { duration: 0.3 },
+                }}
+              >
+                {words[index]}
+              </motion.span>
+            </AnimatePresence>
+          </span>
+
+          <span>happens</span>
+        </h1>
+
+        {/* Subtext */}
+        <p className="text-xl text-gray-600 max-w-2xl mb-10 leading-relaxed">
+          Share it. Discuss it. Get it done. Side by side with AI agents.
+        </p>
+
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-16">
+          <button className="px-8 py-4 rounded-lg bg-purple-900 text-white font-bold hover:bg-purple-800 transition transform hover:scale-105 shadow-lg tracking-wide uppercase text-sm">
+            Get Started
+          </button>
+          <button className="px-8 py-4 rounded-lg border-2 border-purple-900 text-purple-900 font-bold hover:bg-purple-50 transition flex items-center gap-2 uppercase text-sm tracking-wide">
+            Find Your Subscription <ArrowRight size={16} />
+          </button>
+        </div>
+
+        {/* Partner Logos */}
+        <div className="w-full max-w-5xl mx-auto mb-20">
+          <p className="text-sm font-semibold text-gray-500 mb-8 uppercase tracking-wider">
+            The most innovative companies run their business in Slack
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16 opacity-100">
+            <img
+              src="https://a.slack-edge.com/84f9021/marketing/img/homepage/true-prospects/hero-revamp/logos/logo-gm-small.png"
+              alt="GM"
+              className="h-8 md:h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+            />
+            <img
+              src="https://a.slack-edge.com/84f9021/marketing/img/homepage/true-prospects/hero-revamp/logos/logo-openai-small.png"
+              alt="OpenAI"
+              className="h-8 md:h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+            />
+            <img
+              src="https://a.slack-edge.com/a4c4a15/marketing/img/homepage/true-prospects/revamp-exp/logos/logo-target-small.png"
+              alt="Target"
+              className="h-8 md:h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+            />
+            <img
+              src="https://a.slack-edge.com/84f9021/marketing/img/homepage/true-prospects/hero-revamp/logos/logo-paramount-small.png"
+              alt="Paramount"
+              className="h-8 md:h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+            />
+            <img
+              src="https://a.slack-edge.com/84f9021/marketing/img/homepage/true-prospects/hero-revamp/logos/logo-stripe-small.png"
+              alt="Stripe"
+              className="h-8 md:h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+            />
+            <img
+              src="https://a.slack-edge.com/84f9021/marketing/img/homepage/true-prospects/hero-revamp/logos/logo-ibm-small.png"
+              alt="IBM"
+              className="h-8 md:h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+            />
+          </div>
+        </div>
+
+        {/* --- APP MOCKUP --- */}
+        <div className="relative w-full max-w-5xl mx-auto perspective-1000">
+          <motion.div
+            initial={{ rotateX: 20, opacity: 0, y: 50 }}
+            animate={{ rotateX: 0, opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="rounded-xl overflow-hidden shadow-2xl border border-gray-200 bg-white"
+          >
+            {/* Window Header */}
+            <div className="bg-purple-900 text-white px-4 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                </div>
+                <span className="font-bold text-sm tracking-wide">
+                  A1 Company Ltd.
+                </span>
+              </div>
+              <div className="w-64 bg-purple-800/50 rounded-md h-8 flex items-center px-3 text-purple-200 text-sm">
+                Search A1 Company Ltd.
+              </div>
+              <div className="w-8" />
+            </div>
+
+            <div className="flex h-[500px] text-left">
+              {/* Sidebar */}
+              <div className="w-64 bg-purple-900 text-purple-100 flex flex-col p-4 gap-6 md:flex">
+                <div>
+                  <div className="flex items-center justify-between mb-2 opacity-70 hover:opacity-100 cursor-pointer">
+                    <span className="text-sm font-medium">Channels</span>
+                    <Plus size={14} />
                   </div>
-                  <div className="flex-1 text-center text-gray-400 text-xs font-mono">Acme Inc</div>
+                  <ul className="space-y-1">
+                    <li className="px-2 py-1 hover:bg-purple-800 rounded cursor-pointer">
+                      # announcements
+                    </li>
+                    <li className="px-2 py-1 bg-purple-800 text-white rounded cursor-pointer font-medium">
+                      # project-gizmo
+                    </li>
+                    <li className="px-2 py-1 hover:bg-purple-800 rounded cursor-pointer">
+                      # team-marketing
+                    </li>
+                    <li className="px-2 py-1 hover:bg-purple-800 rounded cursor-pointer">
+                      # design-systems
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-2 opacity-70 hover:opacity-100 cursor-pointer">
+                    <span className="text-sm font-medium">Direct Messages</span>
+                    <Plus size={14} />
+                  </div>
+                  <ul className="space-y-3">
+                    <li className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded bg-green-500" />
+                      <span className="text-sm">Sarah Chen</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded bg-blue-500" />
+                      <span className="text-sm">Tom Wilson</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Main Chat Area */}
+              <div className="flex-1 bg-white flex flex-col">
+                {/* Channel Header */}
+                <div className="h-16 border-b flex items-center justify-between px-6 bg-white sticky top-0 z-10">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-gray-900">
+                      # project-gizmo
+                    </span>
+                    <span className="text-xs border px-2 py-0.5 rounded-full text-gray-500">
+                      v0.4.2
+                    </span>
+                  </div>
+                  <div className="flex -space-x-2">
+                    <div className="w-8 h-8 rounded-lg bg-red-100 border-2 border-white" />
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 border-2 border-white" />
+                    <div className="w-8 h-8 rounded-lg bg-green-100 border-2 border-white flex items-center justify-center text-xs font-bold text-gray-600">
+                      +5
+                    </div>
+                  </div>
                 </div>
 
-                {/* Slack Interface */}
-                <div className="flex h-80 bg-white">
-                  {/* Sidebar */}
-                  <div className="w-20 bg-gradient-to-b from-purple-800 to-purple-900 px-3 py-4 flex flex-col gap-3">
-                    <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white text-xs font-bold">
-                      A
+                {/* Chat Content */}
+                <div className="flex-1 p-6 overflow-y-auto bg-gray-50/50 space-y-6">
+                  {/* Google Calendar Card */}
+                  <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded bg-white shadow-sm flex items-center justify-center shrink-0">
+                      <Calendar className="text-blue-500" size={20} />
                     </div>
-                    <div className="w-6 h-6 bg-purple-700/50 rounded" />
-                    <div className="w-6 h-6 bg-purple-700/50 rounded" />
-                    <div className="flex-1" />
-                    <div className="w-6 h-6 bg-purple-700/50 rounded" />
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-gray-900">
+                          Google Calendar
+                        </span>
+                        <span className="text-xs text-gray-500 bg-gray-200 px-1 rounded">
+                          APP
+                        </span>
+                        <span className="text-xs text-gray-400">10:00 AM</span>
+                      </div>
+                      <div className="bg-white p-4 rounded-xl border-l-4 border-blue-500 shadow-sm max-w-md">
+                        <h4 className="font-bold text-gray-900">
+                          Project Status Meeting
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                          Today from 01:30-02:00 PM
+                        </p>
+                        <div className="flex gap-2">
+                          <div className="w-6 h-6 rounded-full bg-gray-200" />
+                          <div className="w-6 h-6 rounded-full bg-gray-300" />
+                          <span className="text-xs text-gray-500 self-center">
+                            +6 others
+                          </span>
+                        </div>
+                        <button className="mt-3 text-sm font-semibold text-blue-600 border border-blue-200 px-3 py-1 rounded hover:bg-blue-50">
+                          Join Meeting
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Main Content */}
-                  <div className="flex-1 flex flex-col">
-                    {/* Channel Header */}
-                    <div className="border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+                  {/* Huddle Card */}
+                  <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded bg-green-100 flex items-center justify-center shrink-0">
+                      <Video className="text-green-700" size={20} />
+                    </div>
+                    <div className="flex-1 space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-purple-600 font-bold">#</span>
-                        <span className="font-semibold text-xs text-gray-900">marketing</span>
+                        <span className="font-bold text-gray-900">Huddle</span>
+                        <span className="text-xs text-green-700 bg-green-100 px-1.5 py-0.5 rounded font-bold">
+                          LIVE
+                        </span>
                       </div>
-                    </div>
-
-                    {/* Messages */}
-                    <div className="flex-1 p-4 flex flex-col gap-3">
-                      <div className="flex items-start gap-2">
-                        <div className="w-6 h-6 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex-shrink-0" />
-                        <div className="flex-1">
-                          <div className="text-xs font-semibold text-gray-900">Sarah</div>
-                          <div className="text-xs text-gray-600 mt-1">Great work on that!</div>
+                      <div className="bg-green-50 p-4 rounded-xl border border-green-100 flex items-center justify-between max-w-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="flex -space-x-2">
+                            <div className="w-8 h-8 rounded-lg bg-purple-200 border-2 border-white" />
+                            <div className="w-8 h-8 rounded-lg bg-yellow-200 border-2 border-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              Kriti and 5 others are in it.
+                            </p>
+                            <p className="text-xs text-green-700 font-bold cursor-pointer hover:underline">
+                              Join them
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full flex-shrink-0" />
-                        <div className="flex-1">
-                          <div className="text-xs font-semibold text-gray-900">Maya</div>
-                          <div className="text-xs text-gray-600 mt-1">Just shipped!</div>
-                        </div>
+                        <button className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition">
+                          <Video size={16} />
+                        </button>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Input */}
-                    <div className="border-t border-gray-200 px-4 py-3">
-                      <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg">
-                        <input
-                          type="text"
-                          placeholder="Message"
-                          className="flex-1 bg-transparent text-xs placeholder-gray-500 outline-none"
-                        />
-                      </div>
+                  {/* AI Summary */}
+                  <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded bg-purple-100 flex items-center justify-center shrink-0">
+                      <span className="text-lg">✨</span>
                     </div>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-gray-900">
+                          AI Recap
+                        </span>
+                        <span className="text-xs text-gray-400">Just now</span>
+                      </div>
+                      <p className="text-sm text-gray-600 italic">
+                        Looks like we are on track to launch next week! 🚀
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message Input */}
+                <div className="p-4 bg-white border-t">
+                  <div className="border rounded-lg flex items-center p-2 gap-2 shadow-sm">
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <Plus size={20} className="text-gray-500" />
+                    </button>
+                    <input
+                      type="text"
+                      placeholder="Message #project-gizmo"
+                      className="flex-1 outline-none text-sm"
+                    />
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <Video size={20} className="text-gray-500" />
+                    </button>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <MoreHorizontal size={20} className="text-gray-500" />
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
-  )
+  );
 }

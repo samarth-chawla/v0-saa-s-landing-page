@@ -1,17 +1,9 @@
-"use client"
+"use client";
 
-import { Mail, Linkedin, Twitter } from "lucide-react"
+import { Mail, Linkedin, Twitter } from "lucide-react";
 
-interface FooterProps {
-  colorState: "purple" | "cyan" | "green"
-}
-
-export default function Footer({ colorState }: FooterProps) {
-  const textColor = {
-    purple: "text-purple-600",
-    cyan: "text-cyan-600",
-    green: "text-green-600",
-  }[colorState]
+export default function Footer() {
+  const textColor = "text-purple-600";
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -19,8 +11,14 @@ export default function Footer({ colorState }: FooterProps) {
         <div className="grid md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div>
-            <div className={`text-2xl font-bold ${textColor} text-color-transition mb-4`}>Sync</div>
-            <p className="text-sm text-gray-400">Seamless team communication for the modern world.</p>
+            <div
+              className={`text-2xl font-bold ${textColor} text-color-transition mb-4`}
+            >
+              Sync
+            </div>
+            <p className="text-sm text-gray-400">
+              Seamless team communication for the modern world.
+            </p>
           </div>
 
           {/* Product */}
@@ -108,13 +106,22 @@ export default function Footer({ colorState }: FooterProps) {
           <div>
             <h4 className="font-semibold text-white mb-4">Connect</h4>
             <div className="flex gap-4">
-              <a href="#" className="p-2 hover:bg-gray-800 rounded-lg transition">
+              <a
+                href="#"
+                className="p-2 hover:bg-gray-800 rounded-lg transition"
+              >
                 <Twitter size={20} />
               </a>
-              <a href="#" className="p-2 hover:bg-gray-800 rounded-lg transition">
+              <a
+                href="#"
+                className="p-2 hover:bg-gray-800 rounded-lg transition"
+              >
                 <Linkedin size={20} />
               </a>
-              <a href="#" className="p-2 hover:bg-gray-800 rounded-lg transition">
+              <a
+                href="#"
+                className="p-2 hover:bg-gray-800 rounded-lg transition"
+              >
                 <Mail size={20} />
               </a>
             </div>
@@ -122,7 +129,9 @@ export default function Footer({ colorState }: FooterProps) {
         </div>
 
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-400">© 2025 Sync. All rights reserved.</p>
+          <p className="text-sm text-gray-400">
+            © 2025 Sync. All rights reserved.
+          </p>
           <div className="flex gap-4 text-sm">
             <a href="#" className="hover:text-white transition">
               Status
@@ -137,5 +146,5 @@ export default function Footer({ colorState }: FooterProps) {
         </div>
       </div>
     </footer>
-  )
+  );
 }
