@@ -107,13 +107,13 @@ export default function Pricing() {
 
         <div className="grid md:grid-cols-3 gap-8">
           {plans.map((plan, index) => {
-            const isHighlighted = selectedPlan === plan.name || plan.popular;
+            const isSelected = selectedPlan === plan.name;
             return (
               <button
                 key={index}
                 onClick={() => setSelectedPlan(plan.name)}
                 className={`relative p-8 rounded-2xl border transition-all duration-500 transform hover:scale-105 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                  isHighlighted
+                  isSelected
                     ? `border-2 border-purple-500 bg-white shadow-xl`
                     : "border-gray-200 bg-white"
                 } ${
@@ -123,7 +123,7 @@ export default function Pricing() {
                 }`}
                 style={{
                   transitionDelay: `${index * 100}ms`,
-                  borderColor: isHighlighted ? "#a855f7" : "#e5e7eb",
+                  borderColor: isSelected ? "#a855f7" : "#e5e7eb",
                 }}
               >
                 {plan.popular && selectedPlan !== plan.name && (
@@ -154,10 +154,8 @@ export default function Pricing() {
 
                 <div
                   className={`w-full px-6 py-3 rounded-lg font-semibold transition mb-8 ${
-                    selectedPlan === plan.name
+                    isSelected
                       ? `bg-linear-to-r ${buttonGradient} text-white shadow-lg`
-                      : plan.popular
-                      ? `bg-linear-to-r ${buttonGradient} text-white hover:shadow-lg`
                       : "border-2 border-gray-200 text-gray-900 hover:bg-gray-50"
                   }`}
                 >
