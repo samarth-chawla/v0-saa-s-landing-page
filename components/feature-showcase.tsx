@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Search, AppWindow, Sparkles } from "lucide-react";
 
@@ -68,6 +68,52 @@ const features = [
     accent: "bg-purple-500",
   },
 ];
+
+// Custom hook for animated counter
+function useCountUp(target: string, duration: number = 2000) {
+  const [displayValue, setDisplayValue] = useState("0");
+  const elementRef = useRef<HTMLSpanElement>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          // Extract numeric value from target (e.g., "80%" -> 80)
+          const numericTarget = parseInt(target.replace(/\D/g, "")) || 0;
+          const startTime = Date.now();
+          const suffix = target.replace(/\d/g, ""); // Get non-numeric suffix (%, mins, etc.)
+
+          const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const currentValue = Math.floor(numericTarget * progress);
+            setDisplayValue(`${currentValue}${suffix}`);
+
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            }
+          };
+          animate();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => {
+      if (elementRef.current) {
+        observer.unobserve(elementRef.current);
+      }
+    };
+  }, [target, duration]);
+
+  return { displayValue, elementRef };
+}
 
 export default function FeatureShowcase() {
   const [activeTab, setActiveTab] = useState(0);
@@ -147,10 +193,8 @@ export default function FeatureShowcase() {
                 </p>
 
                 <div className="pt-6">
-                  <div className="flex items-baseline gap-3 mb-2">
-                    <span className="text-5xl font-bold text-purple-600">
-                      {features[activeTab].stat}
-                    </span>
+                  <div className="flex items-center gap-3 mb-2">
+                    <StatCounter value={features[activeTab].stat} />
                     <span className="text-sm text-gray-500 max-w-[200px] leading-tight">
                       {features[activeTab].statInfo}
                     </span>
@@ -209,5 +253,14 @@ export default function FeatureShowcase() {
         </div>
       </div>
     </section>
+  );
+}
+
+function StatCounter({ value }: { value: string }) {
+  const { displayValue, elementRef } = useCountUp(value);
+  return (
+    <span ref={elementRef} className="text-5xl font-bold text-purple-600">
+      {displayValue}
+    </span>
   );
 }
